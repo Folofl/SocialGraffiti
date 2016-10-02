@@ -3,4 +3,5 @@
 
     <string name="new_pin">Your New Pin</string>
     <string name="pic">Add a Picture</string>
+    <string name="textbox_hint"> Enter your message here</string>
 </resources>

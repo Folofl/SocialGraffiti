@@ -13,5 +13,46 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/new_pin" />
+        android:text="@string/new_pin"
+        android:textSize="25sp"
+        android:id="@+id/text_newPin" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox_border"
+        android:lines="8"
+        android:minLines="2"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:layout_marginTop="35dp"
+        android:id="@+id/text_message"
+        android:hint="@string/textbox_hint"
+        android:singleLine="false"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pic"
+        android:textSize="25sp"
+        android:id="@+id/text_newPic"
+        android:layout_marginTop="26dp"
+        android:layout_below="@+id/text_message"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Take Photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_newPic"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/button_takePic"
+        android:elevation="0dp" />
+
 </RelativeLayout>
