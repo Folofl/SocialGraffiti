@@ -46,13 +46,25 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <ImageView
+        android:src="@android:drawable/ic_menu_camera"
+        android:background="@drawable/textbox_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:id="@+id/image_thumbnail"
+        android:layout_below="@+id/text_newPic"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:text="Take Photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text_newPic"
-        android:layout_centerHorizontal="true"
         android:id="@+id/button_takePic"
-        android:elevation="0dp" />
+        android:elevation="0dp"
+        android:onClick="openCamera"
+        android:layout_marginTop="46dp"
+        android:layout_below="@+id/image_thumbnail"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="comp150.socialgraffiti">
 
+    <!--We need to be able to take photos and save them-->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- This is to only show app to users with a camera phone -->
     <uses-feature android:name="android.hardware.camera" />
+                  <!--android:required="true"/>-->
 
     <application
         android:allowBackup="true"
