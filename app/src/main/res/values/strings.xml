@@ -1,7 +1,16 @@
 <resources>
     <string name="app_name">SocialGraffiti</string>
 
-    <string name="new_pin">Your New Pin</string>
-    <string name="pic">Add a Picture</string>
+    <string name="button_new_pin">New Pin</string>
+
+    <string name="text_new_pin">Your New Pin</string>
     <string name="textbox_hint"> Enter your message here</string>
+    <string name="text_add_pic">Add a Picture</string>
+    <string name="text_chooseDuration">Choose Duration</string>
+    <string name="text_duration">0 Hours</string>
+
+    <string name="button_pic">Take Photo</string>
+    <string name="button_reset_pic">Reset Photo</string>
+    <string name="button_submit">Make Pin</string>
+    <string name="title_activity_map">Map</string>
 </resources>

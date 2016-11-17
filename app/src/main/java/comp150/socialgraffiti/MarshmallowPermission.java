@@ -11,12 +11,15 @@ import android.widget.Toast;
  * This class takes care of resolving permission problems in Marshmallow
  * The following code was taken from:
  * http://stackoverflow.com/questions/33051265/android-camera-doesnt-open-in-marshmallow
+ *
+ * Expanded this class by adding location permission check
  */
 
 public class MarshmallowPermission {
     public static final int RECORD_PERMISSION_REQUEST_CODE = 1;
     public static final int EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 2;
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 4;
     Activity activity;
 
     public MarshmallowPermission(Activity activity) {
@@ -50,6 +53,15 @@ public class MarshmallowPermission {
         }
     }
 
+    public boolean checkPermissionForLocation(){
+        int result = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (result == PackageManager.PERMISSION_GRANTED){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void requestPermissionForRecord(){
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.RECORD_AUDIO)){
             Toast.makeText(activity, "Microphone permission needed for recording. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
@@ -71,6 +83,15 @@ public class MarshmallowPermission {
             Toast.makeText(activity, "Camera permission needed. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
         } else {
             ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    public void requestPermissionForLocation(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Toast.makeText(activity, "Location permission needed. Please allow in in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
+            ;
+        } else {
+            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 }
