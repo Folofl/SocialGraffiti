@@ -17,19 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/text_newPic"
-        android:text="@string/text_add_pic"
-        android:textSize="25sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_below="@+id/text_message"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/text_newPin"
-        android:layout_alignEnd="@+id/text_newPin" />
-
     <ImageView
         android:id="@+id/image_thumbnail"
         android:src="@android:drawable/ic_menu_camera"
@@ -122,8 +109,9 @@
     <EditText
         android:id="@+id/text_message"
         android:hint="@string/textbox_hint"
-        android:lines="8"
+        android:lines="2"
         android:minLines="2"
+        android:maxLines="2"
         android:inputType="textMultiLine"
         android:ems="10"
         android:layout_width="wrap_content"
@@ -133,5 +121,16 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/text_newPic"
+        android:text="@string/text_add_pic"
+        android:textSize="25sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/text_message"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

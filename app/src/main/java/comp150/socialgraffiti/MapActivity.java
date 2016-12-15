@@ -245,7 +245,6 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        //marker.setVisible(false);
         return false;
     }
 
@@ -258,13 +257,16 @@ public class MapActivity extends AppCompatActivity
     public void loadMarkers () {
         final Location mLocation;
 
-        if (mCurrentLocation == null) {
+        if (mCurrentLocation != null) {
+            mLocation = mCurrentLocation;
+        } else if (mLastLocation != null){
             mLocation = mLastLocation;
         } else {
+            onLocationChanged(mCurrentLocation);
             mLocation = mCurrentLocation;
         }
 
-        Query queryRef = ref.orderByChild("lat").startAt(mLocation.getLatitude() - 0.1)
+        final Query queryRef = ref.orderByChild("lat").startAt(mLocation.getLatitude() - 0.1)
                 .endAt(mLocation.getLatitude() + 0.1);
 
         queryRef.addChildEventListener(new ChildEventListener() {
@@ -275,44 +277,51 @@ public class MapActivity extends AppCompatActivity
                 if (newGraffiti.getLon() > mLocation.getLongitude() - 0.1
                         && newGraffiti.getLon() < mLocation.getLongitude() + 0.1) {
 
-                    LatLng pin = new LatLng(newGraffiti.getLat(),
-                            newGraffiti.getLon());
+                    long timeLive = (System.currentTimeMillis() - newGraffiti.getTime())/3600000;
 
-                    Marker newMarker = mMap.addMarker(new MarkerOptions()
-                                            .position(pin)
-                                            .title(newGraffiti.getContent()));
-                    newMarker.setTag(newGraffiti.getPhotoURL());
+                    if (timeLive < newGraffiti.getDuration()) {
+                        LatLng pin = new LatLng(newGraffiti.getLat(),
+                                newGraffiti.getLon());
 
-                    mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                        Marker newMarker = mMap.addMarker(new MarkerOptions()
+                                .position(pin)
+                                .title(newGraffiti.getContent()));
+                        newMarker.setTag(newGraffiti.getPhotoURL());
 
-                        @Override
-                        public View getInfoWindow(Marker marker) {
-                            return null;
-                        }
+                        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-                        @Override
-                        public View getInfoContents(Marker marker) {
-
-                            View v = getLayoutInflater().inflate(R.layout.info_window, null);
-
-                            TextView pinContent = (TextView) v.findViewById(R.id.tv_content);
-                            ImageView pinPhoto = (ImageView) v.findViewById(R.id.iv_photo);
-
-                            pinContent.setText(marker.getTitle());
-
-                            String photoURL = (String) marker.getTag();
-                            if (!photoURL.equals("")) {
-                                try {
-                                    Bitmap imageBitmap = decodeFromFirebaseBase64(photoURL);
-                                    pinPhoto.setImageBitmap(imageBitmap);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                            @Override
+                            public View getInfoWindow(Marker marker) {
+                                return null;
                             }
 
-                            return v;
-                        }
-                    });
+                            @Override
+                            public View getInfoContents(Marker marker) {
+
+                                View v = getLayoutInflater().inflate(R.layout.info_window, null);
+
+                                TextView pinContent = (TextView) v.findViewById(R.id.tv_content);
+                                ImageView pinPhoto = (ImageView) v.findViewById(R.id.iv_photo);
+
+                                pinContent.setText(marker.getTitle());
+
+                                String photoURL = (String) marker.getTag();
+                                if (!photoURL.equals("")) {
+                                    try {
+                                        Bitmap imageBitmap = decodeFromFirebaseBase64(photoURL);
+                                        pinPhoto.setImageBitmap(imageBitmap);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                return v;
+                            }
+                        });
+                    }
+                    else if (timeLive >= newGraffiti.getDuration()) {
+                        FirebaseDatabase.getInstance().getReference().getRoot().child(dataSnapshot.getKey()).removeValue();
+                    }
                 }
             }
 

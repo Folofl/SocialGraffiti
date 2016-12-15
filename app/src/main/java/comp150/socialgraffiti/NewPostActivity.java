@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -116,6 +117,11 @@ public class NewPostActivity extends Activity {
     }
 
     public void submitPost (View view) {
+        if (!addedPhoto && (contentText.getText().toString().equals(""))) {
+            Toast.makeText(this, "Please add a message or a photo", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             graffiti.setUser(user.getUid());
