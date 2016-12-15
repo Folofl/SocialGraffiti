@@ -5,7 +5,8 @@ android {
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "comp150.socialgraffiti"
-        minSdkVersion 15
+        minSdkVersion 16
+        multiDexEnabled true
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -26,7 +27,18 @@ dependencies {
     })
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.google.android.gms:play-services:8.4.0'
-    testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services-auth:9.6.0'
+    compile 'com.google.android.gms:play-services-maps:9.6.0'
+    compile 'com.google.android.gms:play-services-location:9.6.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+    compile 'com.google.firebase:firebase-core:9.6.0'
+    compile 'com.google.firebase:firebase-database:9.6.0'
+    compile 'com.google.firebase:firebase-auth:9.6.0'
+    compile 'com.google.firebase:firebase-storage:9.6.0'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.firebaseui:firebase-ui:0.6.0'
+    testCompile 'junit:junit:4.12'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

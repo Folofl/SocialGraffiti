@@ -2,12 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="comp150.socialgraffiti">
 
-    <!-- We need to be able to take photos and save them -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!-- This is to only show app to users with a camera phone -->
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -17,16 +16,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MapActivity"
-            android:label="@string/title_activity_map">
+            android:name=".LogInActivity"
+            android:theme="@style/Theme.AppCompat.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SignUpActivity" android:theme="@style/Theme.AppCompat.Light"/>
+        <activity android:name=".ResetPasswordActivity" android:theme="@style/Theme.AppCompat.Light"></activity>
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map" />
         <activity android:name=".NewPostActivity" />
-        <activity android:name=".MessageActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -44,7 +47,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
     </application>
 
 </manifest>

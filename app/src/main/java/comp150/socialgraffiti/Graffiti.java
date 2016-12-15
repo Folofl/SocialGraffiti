@@ -5,39 +5,27 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 public class Graffiti implements Parcelable {
-    //private int mData;
 
-    protected int id;
-    protected String username;
+    protected String userID;
     protected String content;
     protected boolean hasPhoto;
-    protected String photoString;
+    protected String photoURL;
     protected int duration;
-    protected Location location;
+    protected double lat;
+    protected double lon;
+    protected long time;
 
-    public int getId() {
-        return id;
+    public String getUser() {
+        return userID;
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(String userID) {
+        this.userID = userID;
     }
 
     public String getContent() {
         return content;
     }
-
     public void setContent(String content) {
         this.content = content;
     }
@@ -45,26 +33,26 @@ public class Graffiti implements Parcelable {
     public boolean hasPhoto() {
         return hasPhoto;
     }
-
     public void setHasPhoto (boolean hasPhoto) {
         this.hasPhoto = hasPhoto;
     }
 
-    public String getPhotoString () { return photoString; }
+    public String getPhotoURL () { return photoURL; }
+    public void setPhotoURL (String photoURL) { this.photoURL = photoURL; }
 
-    public void setPhotoString (String photoString) { this.photoString = photoString; }
-
-    public int getDuration() {
-        return duration;
-    }
-
+    public int getDuration() { return duration; }
     public void setDuration(int duration) {
         this.duration = duration;
     }
 
-    public Location getLocation () { return location; }
-
-    public void setLocation (Location location) {this.location = location;}
+    public void setLocation (Location location) {
+        this.lat = location.getLatitude();
+        this.lon = location.getLongitude();
+        this.time = location.getTime();
+    }
+    public double getLat () { return this.lat; }
+    public double getLon () { return this.lon; }
+    public long   getTime () { return this.time; }
 
     @Override
     public int describeContents() {
@@ -73,13 +61,14 @@ public class Graffiti implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(username);
+        dest.writeString(userID);
         dest.writeString(content);
         dest.writeByte((byte) (hasPhoto ? 1 : 0));
-        dest.writeString(photoString);
+        dest.writeString(photoURL);
         dest.writeInt(duration);
-        location.writeToParcel(dest, flags);
+        dest.writeDouble(lat);
+        dest.writeDouble(lon);
+        dest.writeLong(time);
     }
 
     public static final Parcelable.Creator<Graffiti> CREATOR
@@ -97,13 +86,13 @@ public class Graffiti implements Parcelable {
     }
 
     private Graffiti(Parcel in) {
-        //mData = in.readInt();
-        id = in.readInt();
-        username = in.readString();
+        userID = in.readString();
         content = in.readString();
         hasPhoto = in.readByte() != 0;
-        photoString = in.readString();
+        photoURL = in.readString();
         duration = in.readInt();
-        location = Location.CREATOR.createFromParcel(in);
+        lat = in.readDouble();
+        lon = in.readDouble();
+        time = in.readLong();
     }
 }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "628288563895",
+    "firebase_url": "https://social-graffiti.firebaseio.com",
+    "project_id": "social-graffiti",
+    "storage_bucket": "social-graffiti.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628288563895:android:b55d95109848a6d7",
+        "android_client_info": {
+          "package_name": "comp150.socialgraffiti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628288563895-2509b98l6mg0s3gft9nlm0fj1l5ja4no.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqp24HYFWCLRuuCQNdhKwwSGWwY7SSJEo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628288563895-2509b98l6mg0s3gft9nlm0fj1l5ja4no.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

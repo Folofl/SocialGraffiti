@@ -1,26 +1,14 @@
 package comp150.socialgraffiti;
 
-import android.content.Intent;
-import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.view.View;
-
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,18 +16,31 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
+import android.util.Base64;
+import android.view.View;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 import android.location.Location;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -49,13 +50,14 @@ public class MapActivity extends FragmentActivity
                                     OnMyLocationButtonClickListener,
                                     ConnectionCallbacks,
                                     OnConnectionFailedListener,
-                                    LocationListener,
-                                    OnCameraChangeListener {
+                                    LocationListener {
 
     protected static final String TAG = "MapActivity";
     private final static int REQUEST_CODE_NEW_POST = 2;
 
     private GoogleMap mMap;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference();
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
@@ -70,6 +72,7 @@ public class MapActivity extends FragmentActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
@@ -85,36 +88,14 @@ public class MapActivity extends FragmentActivity
         mMap = googleMap;
 
         enableMyLocation();
-        mMap.setOnCameraChangeListener(this);
         mMap.setOnMarkerClickListener(this);
-    }
-
-    @Override
-    public void onCameraChange(CameraPosition position) {
-//        float maxZoom = 20.0f;
-//        float minZoom = 17.0f;
-//
-//        if (mCurrentLocation != null) {
-//            LatLng center = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
-//        } else if (mLastLocation != null) {
-//            LatLng center = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
-//        }
-//
-//        if (position.zoom > maxZoom)
-//            mMap.animateCamera(CameraUpdateFactory.zoomTo(maxZoom));
-//        else if (position.zoom < minZoom)
-//            mMap.animateCamera(CameraUpdateFactory.zoomTo(minZoom));
     }
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
              marshmallowPermission.requestPermissionForLocation();
         } else if (mMap != null) {
-            // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
@@ -153,6 +134,7 @@ public class MapActivity extends FragmentActivity
         }
 
         startLocationUpdates();
+        loadMarkers();
     }
 
     @Override
@@ -162,7 +144,6 @@ public class MapActivity extends FragmentActivity
 
     @Override
     public void onConnectionSuspended(int cause) {
-        // Connection was lost for some reason. Attempt to re-establish the connection.
         Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
@@ -197,6 +178,7 @@ public class MapActivity extends FragmentActivity
 
         LatLng center = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
+        loadMarkers();
     }
 
     @Override
@@ -221,26 +203,109 @@ public class MapActivity extends FragmentActivity
         }
     }
 
+    public void signOut (View view) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        if (auth.getCurrentUser() != null) {
+            auth.signOut();
+            stopLocationUpdates();
+            startActivity(new Intent(MapActivity.this, LogInActivity.class));
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_NEW_POST && resultCode == RESULT_OK) {
-            Log.e("-----", "Create a marker here");
-            if (data != null) {
-                Graffiti graffiti = (Graffiti) data.getParcelableExtra("GRAFFITI_EXTRA");
 
-                LatLng pin = new LatLng(graffiti.getLocation().getLatitude(),
-                                        graffiti.getLocation().getLongitude());
-
-                mMap.addMarker(new MarkerOptions()
-                        .position(pin)
-                        .title(graffiti.getContent()));
-            }
         }
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        marker.setVisible(false);
+        //marker.setVisible(false);
         return false;
+    }
+
+    // https://www.learnhowtoprogram.com/android/gestures-animations-flexible-uis/using-the-camera-and-saving-images-to-firebase
+    public static Bitmap decodeFromFirebaseBase64(String image) throws IOException {
+        byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+    }
+
+    public void loadMarkers () {
+        final Location mLocation;
+
+        if (mCurrentLocation == null) {
+            mLocation = mLastLocation;
+        } else {
+            mLocation = mCurrentLocation;
+        }
+
+        Query queryRef = ref.orderByChild("lat").startAt(mLocation.getLatitude() - 0.1)
+                .endAt(mLocation.getLatitude() + 0.1);
+
+        queryRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                final Graffiti newGraffiti = dataSnapshot.getValue(Graffiti.class);
+
+                if (newGraffiti.getLon() > mLocation.getLongitude() - 0.1
+                        && newGraffiti.getLon() < mLocation.getLongitude() + 0.1) {
+
+                    LatLng pin = new LatLng(newGraffiti.getLat(),
+                            newGraffiti.getLon());
+
+                    Marker newMarker = mMap.addMarker(new MarkerOptions()
+                                            .position(pin)
+                                            .title(newGraffiti.getContent()));
+                    newMarker.setTag(newGraffiti.getPhotoURL());
+
+                    mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                        @Override
+                        public View getInfoWindow(Marker marker) {
+                            return null;
+                        }
+
+                        @Override
+                        public View getInfoContents(Marker marker) {
+
+                            View v = getLayoutInflater().inflate(R.layout.info_window, null);
+
+                            TextView pinContent = (TextView) v.findViewById(R.id.tv_content);
+                            ImageView pinPhoto = (ImageView) v.findViewById(R.id.iv_photo);
+
+                            pinContent.setText(marker.getTitle());
+
+                            String photoURL = (String) marker.getTag();
+                            if (!photoURL.equals("")) {
+                                try {
+                                    Bitmap imageBitmap = decodeFromFirebaseBase64(photoURL);
+                                    pinPhoto.setImageBitmap(imageBitmap);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            return v;
+                        }
+                    });
+
+                    newMarker.showInfoWindow();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 }

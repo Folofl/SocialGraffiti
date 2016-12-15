@@ -30,7 +30,18 @@
         android:onClick="createPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_gravity="left|bottom"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp"
+        android:paddingRight="10dp" />
+
+    <Button
+        android:id="@+id/button_sign_out"
+        android:text="@string/btn_sign_out"
+        android:onClick="signOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
         android:padding="10dp"
         android:layout_marginBottom="20dp"
         android:paddingRight="10dp" />
