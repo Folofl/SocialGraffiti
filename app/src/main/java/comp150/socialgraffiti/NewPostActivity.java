@@ -155,6 +155,16 @@ public class NewPostActivity extends Activity {
         finish();
     }
 
+    public void cancelPost (View view) {
+        Intent returnIntent = new Intent();
+        if (getParent() == null) {
+            setResult(Activity.RESULT_OK, returnIntent);
+        } else {
+            getParent().setResult(Activity.RESULT_OK, returnIntent);
+        }
+        finish();
+    }
+
     private void updateDurationText() {
         int duration = durationBar.getProgress();
         duration += 1;

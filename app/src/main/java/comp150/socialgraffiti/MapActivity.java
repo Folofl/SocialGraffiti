@@ -27,9 +27,13 @@ import com.google.firebase.database.Query;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -44,7 +48,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class MapActivity extends FragmentActivity
+public class MapActivity extends AppCompatActivity
                          implements OnMapReadyCallback,
                                     OnMarkerClickListener,
                                     OnMyLocationButtonClickListener,
@@ -80,7 +84,36 @@ public class MapActivity extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+
+        setSupportActionBar(myToolbar);
+
         buildGoogleApiClient();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                if (auth.getCurrentUser() != null) {
+                    auth.signOut();
+                    stopLocationUpdates();
+                    startActivity(new Intent(MapActivity.this, LogInActivity.class));
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -203,16 +236,6 @@ public class MapActivity extends FragmentActivity
         }
     }
 
-    public void signOut (View view) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        if (auth.getCurrentUser() != null) {
-            auth.signOut();
-            stopLocationUpdates();
-            startActivity(new Intent(MapActivity.this, LogInActivity.class));
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_NEW_POST && resultCode == RESULT_OK) {
@@ -290,8 +313,6 @@ public class MapActivity extends FragmentActivity
                             return v;
                         }
                     });
-
-                    newMarker.showInfoWindow();
                 }
             }
 

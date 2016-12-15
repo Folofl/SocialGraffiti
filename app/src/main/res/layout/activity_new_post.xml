@@ -30,23 +30,6 @@
         android:layout_alignRight="@+id/text_newPin"
         android:layout_alignEnd="@+id/text_newPin" />
 
-    <EditText
-        android:id="@+id/text_message"
-        android:hint="@string/textbox_hint"
-        android:lines="8"
-        android:minLines="2"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/textbox_border"
-        android:layout_below="@+id/text_newPin"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
     <ImageView
         android:id="@+id/image_thumbnail"
         android:src="@android:drawable/ic_menu_camera"
@@ -63,9 +46,21 @@
         android:text="@string/button_submit"
         android:onClick="submitPost"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="400dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_width="130dp" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:text="@string/button_cancel"
+        android:onClick="cancelPost"
+        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:background="@color/colorAccent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/text_chooseDuration"
@@ -104,6 +99,7 @@
         android:id="@+id/button_resetPic"
         android:text="@string/button_reset_pic"
         android:onClick="resetPhoto"
+        android:background="@color/colorAccent"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/text_chooseDuration"
@@ -116,10 +112,26 @@
         android:onClick="openCamera"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
         android:elevation="0dp"
         android:layout_marginTop="15dp"
         android:layout_below="@+id/image_thumbnail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/text_message"
+        android:hint="@string/textbox_hint"
+        android:lines="8"
+        android:minLines="2"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_newPin"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
